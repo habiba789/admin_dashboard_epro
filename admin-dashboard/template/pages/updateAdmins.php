@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_SESSION['login']!==true){
+    header("location:pages/samples/login.php");
+    die();
+}
 require_once "config.php";
 $errorMsg = false;
 if(isset($_GET['id'])){
@@ -18,49 +23,32 @@ if(isset($_POST['updateAdmin'])){
     $upFullname = $_POST['upFullname'];
     $upEmail = $_POST['upEmail'];
     $upPassword = $_POST['upPassword'];
+    $imgName = $_FILES['upAdminImage']['name'];
+    $tmp_name = $_FILES['upAdminImage']['tmp_name'];
 
-    if(isset($_FILES['upAdminImage'])){
-        $upFullname = $_POST['upFullname'];
-        $upEmail = $_POST['upEmail'];
-        $upPassword = $_POST['upPassword'];
-        $imgName = $_FILES['upAdminImage']['name'];
-        $tmp_name = $_FILES['upAdminImage']['tmp_name'];
+    $updateSql = "UPDATE admins SET
+    fullname = '$upFullname',
+    email = '$upEmail',
+    password = '$upPassword'";
 
+    if($imgName !== ''){
         if(move_uploaded_file($tmp_name,'../images/uploads/'.$imgName)){
-            $updateSqlImg = "UPDATE admins SET
-            fullname = '$upFullname',
-            email = '$upEmail',
-            password = '$upPassword',
-            image = '$imgName'
-            WHERE id = $id";
-
-            $updateResultImg = mysqli_query($conn, $updateSqlImg);
-            if($updateResultImg){
-                header("location:admins.php");
-                exit(); 
-            }else{
-                $errorMsg ="Got some issue in updating data";
-            }
+            $updateSql .= ",image = '$imgName'";
+        }else{
+            $errorMsg ="Got some issue in uploading image";
         }
-
-        
-    }else{
-        $updateSql = "UPDATE admins SET
-        fullname = '$upFullname',
-        email = '$upEmail',
-        password = '$upPassword'
-        WHERE id = $id";
+    }
+        $updateSql .= "WHERE id = $id";
     
         $updateResult = mysqli_query($conn, $updateSql);
         if($updateResult){
             header("location:admins.php");
-            exit(); 
         }else{
             $errorMsg ="Got some issue in updating data";
         }
     }
 
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

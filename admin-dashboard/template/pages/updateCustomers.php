@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_SESSION['login']!==true){
+    header("location:pages/samples/login.php");
+    die();
+}
 require_once "config.php";
 $errorMsg = false;
 if(isset($_GET['id'])){
@@ -7,7 +12,7 @@ if(isset($_GET['id'])){
     $getResult = mysqli_query($conn, $getSql);
     if(mysqli_num_rows($getResult)>0){
         $row = mysqli_fetch_assoc($getResult);
-        $fullname = $row['fullname'];
+        $fullname = $row['custName'];
         $email = $row['email'];
         $password = $row['password'];
         $contact = $row['contact'];
@@ -23,7 +28,7 @@ if(isset($_POST['updateCustomer'])){
     $upLocation = $_POST['upLocation'];
 
     $updateSql = "UPDATE customers SET
-                  fullname = '$upFullname',
+                  custName = '$upFullname',
                   email = '$upEmail',
                   password = '$upPassword',
                   contact = '$upContact',
@@ -109,7 +114,8 @@ include_once "../partials/_header.php";
                                     <div class="form-group">
                                         <select class="form-control form-control-lg text-secondary"
                                             id="exampleFormControlSelect2" name="upLocation"  required>
-                                            <option disabled selected value="">Select a location</option>
+                                            <option selected value="<?php echo $location;?>">
+                                                <?php echo $location;?></option>
                                             <optgroup label="Major Cities">
                                                 <option value="Karachi">Karachi</option>
                                                 <option value="Lahore">Lahore</option>

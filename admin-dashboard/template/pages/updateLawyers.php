@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_SESSION['login']!==true){
+    header("location:pages/samples/login.php");
+    die();
+}
 require_once "config.php";
 $errorMsg = false;
 if(isset($_GET['id'])){
@@ -26,53 +31,34 @@ if(isset($_POST['updateLawyer'])){
     $upServices = $_POST['upServices'];
     $upLocation = $_POST['upLocation'];
     $upLawyerDesp = $_POST['upLawyerDesp'];
+    $imgName = $_FILES['upLawyerImage']['name'];
+    $tmp_name = $_FILES['upLawyerImage']['tmp_name'];
 
-    if(isset($_FILES['upLawyerImage'])){
-        $imgName = $_FILES['upLawyerImage']['name'];
-        $tmp_name = $_FILES['upLawyerImage']['tmp_name'];
-
+    $updateSql= "UPDATE lawyers SET
+        fullname = '$upFullname',
+        email = '$upEmail',
+        password = '$upPassword',
+        contact = '$upContact',
+        services = '$upServices',
+        location = '$upLocation'";
+       
+    if($imgName !== ''){
         if(move_uploaded_file($tmp_name,'../images/uploads/'.$imgName)){
-        $updateSqlImg = "UPDATE lawyers SET
-        fullname = '$upFullname',
-        email = '$upEmail',
-        password = '$upPassword',
-        contact = '$upContact',
-        services = '$upServices',
-        location = '$upLocation',
-        image = '$imgName',
-        description = '$upLawyerDesp'
-        WHERE id = $id";
-
-        $updateResultImg = mysqli_query($conn, $updateSqlImg);
-        if($updateResultImg){
-            header("location:lawyers.php");
-            exit();
+            $updateSql .= ",image = '$imgName'";
         }else{
-            $errorMsg ="Got some issue in updating data";
+            $errorMsg ="Got some issue in uploading image";
         }
-        }
-
-    }else{
-        $updateSql = "UPDATE lawyers SET
-        fullname = '$upFullname',
-        email = '$upEmail',
-        password = '$upPassword',
-        contact = '$upContact',
-        services = '$upServices',
-        location = '$upLocation',
-        description = '$upLawyerDesp'
-        WHERE id = $id";
-    
-        $updateResult = mysqli_query($conn, $updateSql);
+    }
+    $updateSql .= ",description = '$upLawyerDesp'
+    WHERE id = $id";
+    $updateResult = mysqli_query($conn, $updateSql);
         if($updateResult){
             header("location:lawyers.php");
-            exit();
         }else{
             $errorMsg ="Got some issue in updating data";
         }
     }
 
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

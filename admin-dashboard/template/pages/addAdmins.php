@@ -1,4 +1,9 @@
 <?php
+session_start();
+if($_SESSION['login']!==true){
+    header("location:pages/samples/login.php");
+    die();
+}
 require_once "config.php";
 $errorMsg = false;
 if(isset($_POST['insertAdmin'])){

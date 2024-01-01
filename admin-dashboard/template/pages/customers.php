@@ -1,10 +1,45 @@
 <?php
+session_start();
+if($_SESSION['login']!==true){
+    header("location:pages/samples/login.php");
+    die();
+}
 require_once "config.php";
 $viewSql = "SELECT * FROM customers";
 $result = mysqli_query($conn, $viewSql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <style>
+    .upper-box {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+
+    .upper-box-1 {
+        width: 60%;
+    }
+
+    .upper-box-2 {
+        width: 20%;
+    }
+
+    #searchQuery {
+        background-image: url('../images/search.png');
+        background-position: 10px 12px;
+        background-repeat: no-repeat;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+    </style>
+</head>
 
 <?php
 include_once "../partials/_header.php";
@@ -33,9 +68,13 @@ include_once "../partials/_header.php";
                                     <div class="table-responsive">
                                         <h2 class="mb-3">Customers Table</h2>
                                         <p class="fs-6">List of Registered Customers:</p>
-                                        <a href="addCustomers.php"><button type="button"
-                                                class="btn btn-info mt-3 mb-3">Add new customers</button></a>
-                                        <table class="table table-striped">
+                                        <div class="upper-box">
+                                            <input type="text" class="upper-box-1" id="searchQuery"
+                                                placeholder="Search for customers..">
+                                            <a href="addCustomers.php" class="upper-box-2"><button type="button"
+                                                    class="btn btn-info mt-3 mb-3">Add new Customers</button></a>
+                                        </div>
+                                        <table class="table table-striped" id="customerTable">
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
@@ -54,16 +93,16 @@ include_once "../partials/_header.php";
                                            ?>
                                                 <tr>
                                                     <td><?php echo $rows['id'] ;?></td>
-                                                    <td><?php echo $rows['fullname'] ;?></td>
+                                                    <td><?php echo $rows['custName'] ;?></td>
                                                     <td><?php echo $rows['email'] ;?></td>
                                                     <td><?php echo $rows['password'] ;?></td>
                                                     <td><?php echo $rows['contact'] ;?></td>
                                                     <td><?php echo $rows['location'] ;?></td>
                                                     <td>
-                                                        <a href="updateCustomers.php?id=<?php echo $rows['id']; ?>"><button type="button"
-                                                                class="btn btn-info">Update</button></a>
-                                                        <a href="deleteCustomers.php?id=<?php echo $rows['id']; ?>"><button type="button"
-                                                                class="btn btn-danger">Delete</button></a>
+                                                        <a href="updateCustomers.php?id=<?php echo $rows['id']; ?>"><button
+                                                                type="button" class="btn btn-info">Update</button></a>
+                                                        <a href="deleteCustomers.php?id=<?php echo $rows['id']; ?>"><button
+                                                                type="button" class="btn btn-danger">Delete</button></a>
                                                     </td>
 
                                                 </tr>
@@ -92,6 +131,27 @@ include_once "../partials/_header.php";
         <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller ends-->
+    <script>
+    let delayTimer;
+    document.getElementById('searchQuery').addEventListener('keyup', function(e) {
+        clearTimeout(delayTimer);
+        delayTimer = setTimeout(function() {
+            let searchQuery = document.getElementById('searchQuery').value.trim();
+            search(searchQuery);
+        }, 500);
+    });
+
+    function search(query) {
+        fetch('searchCustomer.php?query=' + query)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('customerTable').innerHTML = data;
+            })
+            .catch(error => {
+                console.log("Error: ", error);
+            });
+    }
+    </script>
 
     <!-- plugins:js -->
     <script src="../vendors/js/vendor.bundle.base.js"></script>

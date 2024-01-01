@@ -6,26 +6,52 @@ if($_SESSION['login']!==true){
 }
 require_once "config.php";
 $errorMsg = false;
-if(isset($_POST['insertCustomer'])){
-    $fullname = $_POST['fullname'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $contact = $_POST['contact'];
-    $location = $_POST['location'];
-
-    $emailCheckSql ="SELECT * FROM customers WHERE email = '$email'";
-    $resultCheck = mysqli_query($conn, $emailCheckSql);
-    if(mysqli_num_rows($resultCheck)>0){
-        $errorMsg = "Email already in use. Please use a different email address";
-    }else{
-        $insertSql = "INSERT INTO customers(custName, email, password, contact, location) VALUES ('$fullname', '$email', '$password','$contact','$location')";
-        $result = mysqli_query($conn, $insertSql);
-        if($result){
-            header("location:customers.php");
-        }else{
-            $errorMsg="Got some issue in adding customer. Please Try Again";
-        }
+if(isset($_GET['id'])){
+    $id = $_GET['id'];
+    $getSql = "SELECT * FROM appointments WHERE id = '$id'";
+    $getResult = mysqli_query($conn, $getSql);
+    if(mysqli_num_rows($getResult)>0){
+        $rows = mysqli_fetch_assoc($getResult);
+        $id = $rows['id'];
+        $customers_id = $rows['customers_id'];
+        $lawyers_id = $rows['lawyers_id'];
+        $appDateTime = $rows['appDateTime'];
+    } 
+    $getLawSql = "SELECT id, fullname FROM lawyers";
+    $getLawResult = mysqli_query($conn, $getLawSql);
+    $lawyers = [];
+    while($rowLaw=mysqli_fetch_assoc($getLawResult)){
+        $lawyers[] = $rowLaw;
     }
+
+    $getCustSql = "SELECT id, custName FROM customers";
+    $getCustResult = mysqli_query($conn, $getCustSql);
+    $customers = [];
+    while($rowCust=mysqli_fetch_assoc($getCustResult)){
+        $customers[] = $rowCust;
+    }
+    
+
+if(isset($_POST['updateApp'])){
+    $upLawyer = $_POST['upLawyer'];
+    $upCustomer = $_POST['upCustomer'];
+    $upDate = $_POST['upDate'];
+
+    $updateSql = "UPDATE appointments SET
+                  customers_id = '$upCustomer',
+                  lawyers_id = '$upLawyer',
+                  appDateTime = '$upDate'
+                  WHERE id = '$id'";
+    
+    $updateResult = mysqli_query($conn, $updateSql);
+    if($updateResult){
+        header("location:appointments.php");
+    }else{
+        $errorMsg ="Got some issue in updating data";
+    }
+
+}
+
 }
 ?>
 <!DOCTYPE html>
@@ -54,7 +80,7 @@ include_once "../partials/_header.php";
                     <div class="row w-100 mx-0">
                         <div class="col-lg-6 mx-auto">
                             <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                                <h4>Add New Customers:</h4>
+                                <h4>Update Lawyers Data:</h4>
                                 <form class="pt-3" method="post">
                                     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                                         <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -65,7 +91,7 @@ include_once "../partials/_header.php";
                                     <?php
                                     if($errorMsg){
                                         ?>
-                                          <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
                                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
                                             aria-label="Danger:">
                                             <use xlink:href="#exclamation-triangle-fill" />
@@ -74,58 +100,49 @@ include_once "../partials/_header.php";
                                             <?php echo $errorMsg; ?>
                                         </div>
                                     </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
-                                  
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-lg"
-                                            id="exampleInputUsername1" placeholder="Full name" name="fullname" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                            placeholder="Email" name="email" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-lg"
-                                            id="exampleInputPassword1" placeholder="Password" name="password" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="tel" class="form-control form-control-lg"
-                                            id="exampleInputUsername1" placeholder="Contact Number" name="contact"
+
+                                    <div class="form-group mt-2">
+                                        <label class="  fs-6">Lawyer Name:</label>
+                                        <select class="form-control form-control-lg text-secondary" name="upLawyer"
                                             required>
-                                    </div>
-                                    <div class="form-group">
-                                        <select name="location" class="form-control form-control-lg text-secondary"
-                                            id="exampleFormControlSelect2" required>
-                                            <option disabled selected value="">Select a location</option>
-                                            <optgroup label="Major Cities">
-                                                <option value="Karachi">Karachi</option>
-                                                <option value="Lahore">Lahore</option>
-                                                <option value="Islamabad">Islamabad</option>
-                                                <option value="Rawalpindi">Rawalpindi</option>
-                                                <option value="Faisalabad">Faisalabad</option>
-                                                <option value="Peshawar">Peshawar</option>
-                                                <option value="Quetta">Quetta</option>
-                                            </optgroup>
-                                            <optgroup label="Provinces">
-                                                <option value="Sindh">Sindh</option>
-                                                <option value="Punjab">Punjab</option>
-                                                <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
-                                                <option value="Balochistan">Balochistan</option>
-                                                <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
-                                                <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
-                                            </optgroup>
+                                            <?php foreach($lawyers as $lawyer){
+                                                $selected = ($lawyer['id'] == $lawyers_id)? "selected" : '';
+                                                ?>
+                                            <option value="<?php echo $lawyer['id'];?>" <?php echo $selected;?>>
+                                                <?php echo $lawyer['fullname'];?></option>
+                                            <?php
+                                            }
+                                            ?>
                                         </select>
                                     </div>
-
+                                    <div class="form-group">
+                                        <label class="  fs-6">Customer Name:</label>
+                                        <select class="form-control form-control-lg text-secondary" name="upCustomer"
+                                            required>
+                                            <?php foreach($customers as $customer){
+                                                $selected = ($customer['id'] == $customers_id)? "selected" : '';
+                                                ?>
+                                            <option value="<?php echo $customer['id'];?>" <?php echo $selected;?>>
+                                                <?php echo $customer['custName'];?></option>
+                                            <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                    <label class="  fs-6">Appointment Schedule:</label>
+                                        <input type="datetime-local" class="form-control form-control-lg text-secondary" id="dateInput" name="upDate" value="<?php echo $appDateTime;?>">
+                                    </div>
                                     <div class="mt-3">
                                         <button
-                                            class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                                            name="insertCustomer">Click to Insert</button>
+                                            class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn fs-6 fw-bold"
+                                            name="updateApp">Click to Update</button>
                                     </div>
                                     <div class="text-center mt-4 font-weight-light">
-                                        Go back to <a href="../pages/customers.php" class="text-primary">customers
+                                        Go back to <a href="appointments.php" class="text-primary">Appointments
                                             table</a>
                                     </div>
                                 </form>

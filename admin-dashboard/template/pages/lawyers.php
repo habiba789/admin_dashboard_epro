@@ -15,6 +15,17 @@ $result = mysqli_query($conn, $viewSql);
 include_once "../partials/_header.php";
 ?>
 
+<style>
+    .table td img{
+        width:70px;
+        height:70px;
+        object-fit: cover;
+        object-position: top;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
+    }
+</style>
+
 <head>
     <style>
     .upper-box {
@@ -116,7 +127,7 @@ include_once "../partials/_header.php";
                                                         <?php echo $rows['location'] ;?>
                                                     </td>
                                                     <td><img src="../images/uploads/<?php echo $rows['image'];?>"
-                                                            alt="lawyer pic" height="200"></td>
+                                                            alt="lawyer pic" width="200px"></td>
                                                     <td>
                                                         <a href="updateLawyers.php?id=<?php echo $rows['id']; ?>"><button
                                                                 type="button" class="btn btn-info">View &

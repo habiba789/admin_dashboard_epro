@@ -23,10 +23,10 @@ if(isset($_POST['insertLawyer'])){
         $errorMsg = "Email already in use. Please use a different email address";
     }else{
         if(move_uploaded_file($tmp_name,'../images/uploads/'.$imgName)){
-            $sql = "INSERT INTO `lawyers` (`fullname`, `email`, `password`, `contact`, `services`, `location`, `image`, `description`) VALUES ('$fullname', '$email', '$password', '$contact', '$services', '$location', '$imgName', '$lawyerDesp')";
+            $sql = "INSERT INTO lawyers(fullname, email, password, contact, services, location, image, description) VALUES ('$fullname', '$email', '$password','$contact', '$services ','$location', '$imgName', '$lawyerDesp')";
             $result = mysqli_query($conn, $sql);
             if($result){
-                echo " <script>window.location.href='lawyers.php'</script>";
+                header("location:lawyers.php");
             }else{
                 $errorMsg="Got some issue in adding lawyer. Please Try Again";
             }

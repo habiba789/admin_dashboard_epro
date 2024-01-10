@@ -1,16 +1,17 @@
 <?php
 session_start();
-if($_SESSION['login']!==true){
+if ($_SESSION['login'] !== true) {
     header("location:pages/samples/login.php");
     die();
 }
 require_once "config.php";
 $errorMsg = false;
-if(isset($_GET['id'])){
+
+if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $getSql = "SELECT * FROM lawyers WHERE id = '$id'";
     $getResult = mysqli_query($conn, $getSql);
-    if(mysqli_num_rows($getResult)>0){
+    if (mysqli_num_rows($getResult) > 0) {
         $row = mysqli_fetch_assoc($getResult);
         $fullname = $row['fullname'];
         $email = $row['email'];
@@ -20,10 +21,10 @@ if(isset($_GET['id'])){
         $location = $row['location'];
         $image = $row['image'];
         $description = $row['description'];
-    } 
-    
+    }
+
 }
-if(isset($_POST['updateLawyer'])){
+if (isset($_POST['updateLawyer'])) {
     $upFullname = $_POST['upFullname'];
     $upEmail = $_POST['upEmail'];
     $upPassword = $_POST['upPassword'];
@@ -34,30 +35,51 @@ if(isset($_POST['updateLawyer'])){
     $imgName = $_FILES['upLawyerImage']['name'];
     $tmp_name = $_FILES['upLawyerImage']['tmp_name'];
 
-    $updateSql= "UPDATE lawyers SET
-        fullname = '$upFullname',
-        email = '$upEmail',
-        password = '$upPassword',
-        contact = '$upContact',
-        services = '$upServices',
-        location = '$upLocation'";
-       
-    if($imgName !== ''){
-        if(move_uploaded_file($tmp_name,'../images/uploads/'.$imgName)){
-            $updateSql .= ",image = '$imgName'";
-        }else{
-            $errorMsg ="Got some issue in uploading image";
+    function uploadImage($tmp_name, $imgName)
+    {
+        $targetDir = '../images/uploads/';
+        $targetFile = $targetDir . basename($imgName);
+        if (move_uploaded_file($tmp_name, $targetFile)) {
+            return $targetFile;
+        } else {
+            return false;
         }
     }
-    $updateSql .= ",description = '$upLawyerDesp'
-    WHERE id = $id";
-    $updateResult = mysqli_query($conn, $updateSql);
-        if($updateResult){
-            header("location:lawyers.php");
-        }else{
-            $errorMsg ="Got some issue in updating data";
-        }
+
+    $stmt = mysqli_stmt_init($conn);
+
+    $updateSql = "UPDATE lawyers SET fullname=?, email=?, password=?, contact=?, services=?, location=?, description=? WHERE id=?";
+    $imageUpdate = false;
+
+    if ($imgName !== '') {
+        $updateSql = "UPDATE lawyers SET fullname=?, email=?, password=?, contact=?, services=?, location=?, image=?, description=? WHERE id=?";
+        $imageUpdate = true;
     }
+
+    if (mysqli_stmt_prepare($stmt, $updateSql)) {
+        if ($imageUpdate) {
+            $targetFile = uploadImage($tmp_name, $imgName);
+            if ($targetFile) {
+                mysqli_stmt_bind_param($stmt, "ssssssssi", $upFullname, $upEmail, $upPassword, $upContact, $upServices, $upLocation, $imgName, $upLawyerDesp, $id);
+            } else {
+                $errorMsg = "Got some issue in uploading image";
+            }
+        } else {
+            mysqli_stmt_bind_param($stmt, "sssssssi", $upFullname, $upEmail, $upPassword, $upContact, $upServices, $upLocation, $upLawyerDesp, $id);
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            header("location: lawyers.php");
+        } else {
+            $errorMsg = "Update failed.";
+        }
+    } else {
+        $errorMsg = "Error in preparing the statement.";
+    }
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -71,14 +93,14 @@ include_once "../partials/_header.php";
     <div class="container-scroller">
         <!-- navbar partial -->
         <?php
-                  include_once "../partials/_navbar.php";
-                ?>
+include_once "../partials/_navbar.php";
+?>
         <!-- page-body-wrapper start -->
         <div class="container-fluid page-body-wrapper">
             <!-- sidebar partial-->
             <?php
-                 include_once "../partials/_sidebar.php";
-                ?>
+include_once "../partials/_sidebar.php";
+?>
             <!-- main-panel start -->
             <div class="main-panel">
                 <!-- content-wrapper start -->
@@ -95,8 +117,8 @@ include_once "../partials/_header.php";
                                         </symbol>
                                     </svg>
                                     <?php
-                                    if($errorMsg){
-                                        ?>
+if ($errorMsg) {
+    ?>
                                     <div class="alert alert-danger d-flex align-items-center" role="alert">
                                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
                                             aria-label="Danger:">
@@ -107,31 +129,31 @@ include_once "../partials/_header.php";
                                         </div>
                                     </div>
                                     <?php
-                                    }
-                                    ?>
+}
+?>
 
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-lg" placeholder="Full name"
-                                            name="upFullname" value="<?php echo $row['fullname'];?>" required>
+                                            name="upFullname" value="<?php echo $row['fullname']; ?>" required>
                                     </div>
                                     <div class="form-group">
                                         <input type="email" class="form-control form-control-lg" placeholder="Email"
-                                            name="upEmail" value="<?php echo $row['email'];?>" required>
+                                            name="upEmail" value="<?php echo $row['email']; ?>" required>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-lg" placeholder="Password"
-                                            name="upPassword" value="<?php echo $row['password'];?>" required>
+                                            name="upPassword" value="<?php echo $row['password']; ?>" required>
                                     </div>
                                     <div class="form-group">
                                         <input type="tel" class="form-control form-control-lg"
                                             placeholder="Contact Number" name="upContact"
-                                            value="<?php echo $row['contact'];?>" required>
+                                            value="<?php echo $row['contact']; ?>" required>
                                     </div>
                                     <div class="form-group">
                                         <select class="form-control form-control-lg text-secondary" name="upServices"
                                             required>
-                                            <option selected value="<?php echo $row['services'];?>">
-                                                <?php echo $row['services'];?></option>
+                                            <option selected value="<?php echo $row['services']; ?>">
+                                                <?php echo $row['services']; ?></option>
                                             <option value="Legal Consultation and Advice">Legal Consultation and Advice
                                             </option>
                                             <option value="Contracts and Agreements">Contracts and Agreements</option>
@@ -154,8 +176,8 @@ include_once "../partials/_header.php";
                                     <div class="form-group">
                                         <select class="form-control form-control-lg text-secondary" name="upLocation"
                                             required>
-                                            <option selected value="<?php echo $row['location'];?>">
-                                                <?php echo $row['location'];?></option>
+                                            <option selected value="<?php echo $row['location']; ?>">
+                                                <?php echo $row['location']; ?></option>
                                             <optgroup label="Major Cities">
                                                 <option value="Karachi">Karachi</option>
                                                 <option value="Lahore">Lahore</option>
@@ -177,7 +199,7 @@ include_once "../partials/_header.php";
                                     </div>
                                     <div class="form-group" id="preImageDiv" style="display:block">
                                         <label class="text-secondary fs-6">your Image:</label><br>
-                                        <img src="../images/uploads/<?php echo $row['image'];?>" alt="lawyer pic"
+                                        <img src="../images/uploads/<?php echo $row['image']; ?>" alt="lawyer pic"
                                             width="100">
                                     </div>
                                     <div class="form-group">
@@ -201,12 +223,12 @@ include_once "../partials/_header.php";
                                         });
                                     </script>
                                     </div>
-                                     
+
                                     <div class="form-group mb-5">
                                         <label class="text-secondary fs-6">Briefly describe your expertise and
                                             experience:</label>
                                         <textarea name="upLawyerDesp" class="form-control form-control-lg"
-                                            required><?php echo $row['description'];?></textarea>
+                                            required><?php echo $row['description']; ?></textarea>
                                     </div>
 
                                     <div class="mt-3">
@@ -226,8 +248,8 @@ include_once "../partials/_header.php";
                 <!-- content-wrapper ends -->
                 <!-- footer partial -->
                 <?php
-                 include_once "../partials/_footer.php";
-                ?>
+include_once "../partials/_footer.php";
+?>
             </div>
             <!-- main-panel ends -->
         </div>

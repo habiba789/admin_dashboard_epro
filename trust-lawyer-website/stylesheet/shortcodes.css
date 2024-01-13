@@ -132,7 +132,7 @@
 .featured .content .description {
     font-family: "Poppins", sans-serif;
 }
-.fl-btn{
+.featured .content .fl-btn a {
     font-size: 16px;
     font-weight: 700;
     display: inline-block;
@@ -140,7 +140,6 @@
     background-color: #cca776;
     padding: 10px 37px;
     text-transform: uppercase;
-    cursor: pointer;
 }
 .featured .featured-post {
     height: 100%;
@@ -162,7 +161,7 @@
     margin-bottom: 28px;
 }
 .featured-style3 {
-    padding: 112px 0 98px 0;
+    padding: 60px 0 98px 0;
     background-image: url('../images/home1/15.png');
     background-repeat: no-repeat;
     background-size: 72% 48%;
@@ -172,7 +171,6 @@
 .featured-style3 .content {
     height: 100%;
     position: relative;
-
 }
 .featured-style3 .view-all {
     left: 17px;
@@ -341,16 +339,15 @@
 }
 .featured-banner .fl-btn {
     margin-top: 24px;
-    text-align: center;
-    padding: 5px 21px;
+    text-align: right;
 }
 .featured-banner .fl-btn a {
     font-weight: 700;
     color: #fff;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    padding: 5px 25px 5px 25px;
+    padding: 10px 36px 10px 36px;
     display: inline-block;
+    background-color: #cca776;
 }
 .featured-banner-type2 {
     color: #ffffff;

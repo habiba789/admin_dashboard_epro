@@ -927,6 +927,40 @@ input::-webkit-input-placeholder {
    content: "\f106";
 }
 
+.header .navBtns{
+    margin-left: 60px;
+}
+
+.header .navBtns a{
+    color: #ffffff;
+}
+
+.header .navBtns .navBtn-1, 
+.header .navBtns .navBtn-2
+{
+    padding: 6px 25px;
+}
+
+.header .navBtns .navBtn-2{
+    margin-left: 5px;
+}
+
+.header .user-profile-pic{
+    margin-left: 80px;
+}
+
+.header .user-profile-pic{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header .user-profile-pic img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
 /* Mobile navigation
 -------------------------------------------------------------- */
 #mainnav-mobi {

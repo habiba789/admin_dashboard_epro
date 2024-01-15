@@ -44,8 +44,8 @@ echo '
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="flat-contact-us d-lg-flex align-items-center">
-                        <a href="#" class="phone">123.456.7890</a>
-                        <a href="#" class="cosulting hvr-vertical">FREE COSULTING
+                        <a href="contact.php" class="phone">123.456.7890</a>
+                        <a href="contact.php" class="cosulting hvr-vertical">FREE COSULTING
                             <div class="border-animate">
                                 <div class="top"></div>
                                 <div class="right"></div>
@@ -87,14 +87,39 @@ echo '
                                 </li>
                                 <li>
                                     <a href="contact.php">Contact</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header><!-- header -->
+                                </li>'; ?>
 
-';
+<?php
+                                if(!isset($_SESSION['login'])){
+                                  
+                                    echo'
+                                    <li class="navBtns ">
+                                        <button class="navBtn-1 fl-btn hvr-vertical"><a href="registrationForm.php">Join</a></button>
+                                        <button class="navBtn-2 fl-btn hvr-vertical"><a href="loginForm.php">LogIn</a></button>
+                                    </li>';
+                                    
+                               
+                                }
+                                ?>
+<?php
+                                if(isset($_SESSION['login']) && $_SESSION["login"]===true){   
+                                  echo ' <li class="user-profile-pic">
+                                    <a href="User-panel/userpanel.php">
+                                        <img src="images/male_dummy.png" alt="">
+                                        My Profile
+                                    </a>                                    
+                                </li>';   
+                                }
+                                ?>
+
+<?php
+echo '
+</ul>
+</nav>
+</div>
+</div>
+</div>
+</div>
+</header>
+';                          
 ?>

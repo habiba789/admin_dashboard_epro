@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "partials/header.php";
 require_once "config.php";
 $firstLawyers = "SELECT * FROM lawyers LIMIT 2";

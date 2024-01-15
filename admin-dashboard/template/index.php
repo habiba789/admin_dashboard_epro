@@ -115,7 +115,7 @@ $appCount = mysqli_fetch_array($appCountResult)[0];
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/appointments.php">
+                        <a class="nav-link" href="pages/adminProfile.php">
                             <i class="fa-solid fa-circle-user menu-icon"></i>
                             <span class="menu-title">Admin Profile</span>
                         </a>

@@ -203,25 +203,27 @@ if ($errorMsg) {
                                             width="100">
                                     </div>
                                     <div class="form-group">
-                                    <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="keepImageCheckbox" value="yes">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="keepImageCheckbox"
+                                                value="yes">
                                             <label class="form-check-label text-secondary fs-6" for="flexCheckDefault">
                                                 Want to upload the new image
                                             </label>
                                         </div>
                                     </div>
                                     <div class="form-group" id="newImageDiv" style="display:none">
-                                    <label class="text-secondary fs-6">Upload your new Image:</label><br>
+                                        <label class="text-secondary fs-6">Upload your new Image:</label><br>
                                         <input type="file" class="form-control form-control-lg text-secondary"
                                             name="upLawyerImage">
-                                    <script>
-                                        document.getElementById('keepImageCheckbox').addEventListener('change',function(){
-                                            let newImageDiv = document.getElementById('newImageDiv');
-                                            let preImageDiv = document.getElementById('preImageDiv');
-                                            newImageDiv.style.display=this.checked ? 'block' : 'none';
-                                            preImageDiv.style.display=this.checked ? 'none' : 'block';
-                                        });
-                                    </script>
+                                        <script>
+                                        document.getElementById('keepImageCheckbox').addEventListener('change',
+                                            function() {
+                                                let newImageDiv = document.getElementById('newImageDiv');
+                                                let preImageDiv = document.getElementById('preImageDiv');
+                                                newImageDiv.style.display = this.checked ? 'block' : 'none';
+                                                preImageDiv.style.display = this.checked ? 'none' : 'block';
+                                            });
+                                        </script>
                                     </div>
 
                                     <div class="form-group mb-5">

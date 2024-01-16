@@ -104,7 +104,7 @@ echo '
 <?php
                                 if(isset($_SESSION['login']) && $_SESSION["login"]===true){   
                                   echo ' <li class="user-profile-pic">
-                                    <a href="User-panel/userpanel.php">
+                                    <a href="User-panel/userpanelMain.php">
                                         <img src="images/male_dummy.png" alt="">
                                         My Profile
                                     </a>                                    

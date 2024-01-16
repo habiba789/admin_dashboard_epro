@@ -12,7 +12,7 @@ if (isset($_POST['registerCustomer'])) {
     $resultCust = mysqli_query($conn, $regCust);
 
     if ($resultCust) {
-        header("location:index.php");
+        header("location:loginForm.php");
     } else {
         echo ("got some issue in registerin customer");
     }
@@ -40,7 +40,7 @@ if (isset($_POST['registerLawyer'])) {
             mysqli_stmt_execute($stmt);
 
             if (mysqli_stmt_affected_rows($stmt) > 0) {
-                header("location:index.php");
+                header("location:loginForm.php");
             } else {
                 echo "got issue";
             }
@@ -235,6 +235,8 @@ if (isset($_POST['registerLawyer'])) {
     function custBtnChange() {
       let firstBtn = document.getElementById("firstBtn");
       firstBtn.value = "Submit";
+      firstBtn.name="registerCustomer";
+      firstBtn.type="submit";
     }
 
     function toggleForm() {

@@ -1,6 +1,4 @@
 <?php
-
-
 require_once "config.php";
 $errorMsg = false;
 if(isset($_POST['loginCustomer'])) {
@@ -30,7 +28,7 @@ if(isset($_POST['loginLawyer'])) {
     $lawyerResult = mysqli_query($conn, $findLawyer);
 
     if(mysqli_num_rows($lawyerResult)>0){
-        $row = mysqli_fetch_assoc($custResult);
+        $row = mysqli_fetch_assoc($lawyerResult);
         session_start();
         $_SESSION["id"]=$row["id"];
         $_SESSION["login"]=true;
@@ -53,104 +51,104 @@ if(isset($_POST['loginLawyer'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet" />
     <!-- Bootstrap css link -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
-    body {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f3f3f3;
-    }
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
 
-    .container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 100px 20px;
-    }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+        }
 
-    .reg-container {
-        height: 480px;
-        width: 100%;
-        max-width: 500px;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-    }
+        .reg-container {
+            height: 480px;
+            width: 100%;
+            max-width: 500px;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
 
-    .form-container {
-        width: 100%;
-        height: 100%;
-        /* max-width: 600px; */
-        background-color: #ffffff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        .form-container {
+            width: 100%;
+            height: 100%;
+            /* max-width: 600px; */
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    h2 {
-        color: #cca776;
-        text-align: center;
-        margin-bottom: 15px;
-    }
+        h2 {
+            color: #cca776;
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
-    label {
-        color: #333333;
-        font-weight: 300;
-        font-size: 1.1em;
-    }
+        label {
+            color: #333333;
+            font-weight: 300;
+            font-size: 1.1em;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="submit"],
-    input[type="button"] {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="submit"],
+        input[type="button"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
 
-    input[type="radio"] {
-        margin-right: 5px;
-        cursor: pointer;
-    }
+        input[type="radio"] {
+            margin-right: 5px;
+            cursor: pointer;
+        }
 
-    button,
-    input[type="submit"] {
-        background-color: #cca776;
-        color: #ffffff;
-        border: none;
-        cursor: pointer;
-        transition: all 200ms ease-in;
-    }
+        button,
+        input[type="submit"] {
+            background-color: #cca776;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: all 200ms ease-in;
+        }
 
 
-    input[type="submit"]:hover {
-        background-color: #b58e5f;
-    }
+        input[type="submit"]:hover {
+            background-color: #b58e5f;
+        }
 
-    #customerRadio {
-        margin-top: 8px;
-    }
+        #customerRadio {
+            margin-top: 8px;
+        }
 
-    p.signupShift {
-        margin-top: 15px;
-        margin-left: 4px;
-        font-size: 13px;
-    }
+        p.signupShift {
+            margin-top: 15px;
+            margin-left: 4px;
+            font-size: 13px;
+        }
     </style>
     <script>
-    function lawBtnChange() {
-        const loginBtn = document.getElementById('loginBtn');
-        loginBtn.name = "loginLawyer";
-    }
+        function lawBtnChange() {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.name = "loginLawyer";
+        }
 
-    function custBtnChange() {
-        const loginBtn = document.getElementById('loginBtn');
-        loginBtn.name = "loginCustomer";
-    }
+        function custBtnChange() {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.name = "loginCustomer";
+        }
     </script>
 </head>
 
@@ -181,7 +179,7 @@ if(isset($_POST['loginLawyer'])) {
                                     <?php echo $errorMsg; ?>
                                     <script>
                                         let regContainer = document.getElementById('mainContainerId');
-                                        regContainer.style.height="550px";
+                                        regContainer.style.height = "550px";
                                     </script>
                                 </div>
                             </div>
@@ -212,6 +210,19 @@ if(isset($_POST['loginLawyer'])) {
 
         </div>
     </div>
+    <script>
+        function lawBtnChange() {
+            let loginBtn = document.getElementById('loginBtn');
+            loginBtn.name = "loginLawyer";
+            
+        }
+
+        function custBtnChange() {
+            let loginBtn = document.getElementById('loginBtn');
+            loginBtn.name = "loginCustomer";
+        }
+
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

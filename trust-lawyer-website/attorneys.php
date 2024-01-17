@@ -1,6 +1,5 @@
 <?php
 require_once "partials/header.php";
-require_once "config.php";
 $sql = "SELECT * FROM lawyers";
 $result = mysqli_query($conn, $sql);
 

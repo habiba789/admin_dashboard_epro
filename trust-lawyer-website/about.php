@@ -1,6 +1,5 @@
 <?php
 require_once "partials/header.php";
- require_once "config.php";
  $lawyerSql = "SELECT * FROM lawyers LIMIT 6";
  $result = mysqli_query($conn, $lawyerSql);
 

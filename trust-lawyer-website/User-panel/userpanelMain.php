@@ -1,8 +1,6 @@
 <?php
 session_start();
 require_once "../config.php";
-// require_once "includes/headlinks.php";
-// require_once "includes/header.php";
 if(isset($_SESSION['userType']) && $_SESSION['userType'] === "customer"){
   if(isset($_SESSION['id'])){
     $custId = $_SESSION['id'];

@@ -833,6 +833,15 @@ input::-webkit-input-placeholder {
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
+
+.mainnav .loginProfileImg{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    margin-right: 8px;
+}
 .header {
     position: relative;
     background-color: #ffffff;

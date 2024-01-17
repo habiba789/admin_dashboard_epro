@@ -1,32 +1,41 @@
 <?php
 require_once "config.php";
+require_once "partials/header.php";
+$errorMsg = false;
 $attorneysSql = "SELECT * FROM lawyers";
 $attorneyResult = mysqli_query($conn, $attorneysSql);
-if(isset($_POST['appSubmit'])){
+if (isset($_POST['appSubmit'])) {
     $customerName = $_POST['customerName'];
     $customerEmail = $_POST['customerEmail'];
     $attorneyId = $_POST['AttorneyId'];
     $appDateTime = $_POST['appDateTime'];
 
-    $searchCustSql = "SELECT * FROM customers WHERE email = '$customerEmail'";
-    $searchCustResult = mysqli_query($conn, $searchCustSql);
+    $currentDate = date("Y-m-d\TH:i:s");
 
-    if(mysqli_num_rows($searchCustResult)>0){
-        $custrecord = mysqli_fetch_assoc($searchCustResult);
-        $customerId = $custrecord['id'];
+    if ($appDateTime > $currentDate) {
+        $searchCustSql = "SELECT * FROM customers WHERE email = '$customerEmail'";
+        $searchCustResult = mysqli_query($conn, $searchCustSql);
 
-        $insertSql = "INSERT INTO appointments(customers_id, Lawyers_id, appDateTime) VALUES ('$customerId', '$attorneyId', '$appDateTime')";
+        if (mysqli_num_rows($searchCustResult) > 0) {
+            $custrecord = mysqli_fetch_assoc($searchCustResult);
+            $customerId = $custrecord['id'];
 
-        $insertResult = mysqli_query($conn, $insertSql);
+            $insertSql = "INSERT INTO appointments(customers_id, Lawyers_id, appDateTime) VALUES ('$customerId', '$attorneyId', '$appDateTime')";
 
-        if($insertResult){
-            echo "slot booked successfully";
-        }else{
-            echo "got some issue in bookin a slot";
+            $insertResult = mysqli_query($conn, $insertSql);
+
+            if ($insertResult) {
+                echo "slot booked successfully";
+            } else {
+                echo "got some issue in bookin a slot";
+            }
+        } else {
+            echo "no such customer found";
         }
-    }else{
-        echo "no such customer found";
+    } else {
+        $errorMsg = "Kindly enter valid date";
     }
+
 }
 
 ?>
@@ -58,11 +67,9 @@ if(isset($_POST['appSubmit'])){
 
     <link href="icon/favicon.ico" rel="shortcut icon">
     <style>
-   
-
-   .attorney-app-container{
-    padding: 60px 20px;
-   }
+    .attorney-app-container {
+        padding: 60px 20px;
+    }
 
     .appointment-form {
         padding: 20px;
@@ -76,12 +83,12 @@ if(isset($_POST['appSubmit'])){
         padding: 20px;
     }
 
-    .attorney-app-container .image-container img{
+    .attorney-app-container .image-container img {
         width: 80%;
     }
 
-    .appointment-form .lawyerSelection option{
-        margin-bottom:10px;
+    .appointment-form .lawyerSelection option {
+        margin-bottom: 10px;
     }
 
     .book-slot-btn {
@@ -97,121 +104,32 @@ if(isset($_POST['appSubmit'])){
 </head>
 
 <body>
-    <div id="loading-overlay">
-        <div class="loader"></div>
-    </div>
-    <div class="top-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-12">
-                    <ul class="flat-information d-lg-flex align-items-center">
-                        <li class="email"><a href="#" title="Email">hello@finelaw.com</a></li>
-                        <li class="address"><a href="#" title="Address">20 Bardeshi, Amin Bazar, Dhaka</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                    <div class="flat-contact-us d-lg-flex align-items-center">
-                        <a href="#" class="phone">123.456.7890</a>
-                        <a href="#" class="cosulting hvr-vertical">FREE COSULTING
-                            <div class="border-animate">
-                                <div class="top"></div>
-                                <div class="right"></div>
-                                <div class="bottomb"></div>
-                                <div class="left"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- top-bar -->
-    <header id="header" class="header bg-color">
-        <div class="container">
-            <div class="flex-header">
-                <div id="logo" class="logo">
-                    <a href="index-2.php" title="Logo"><img src="images/logo/01.png" data-width="211" data-height="34"
-                            alt="images" data-retina="images/logo/01@2x.png"></a>
-                </div>
-                <div class="content-menu">
-                    <div class="nav-wrap">
-                        <div class="btn-menu"><span></span></div>
-                        <nav id="mainnav" class="mainnav">
-                            <ul class="menu">
-                                <li>
-                                    <a href="index-2.php">Home</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="index-2.php">Home 1</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">About</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="about.php">About</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Practice Area</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="practice-area.php">Practice area</a></li>
-                                        <li><a href="practice-single.php">Practice single</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#" class="active">Attorneys</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="attorneys.php">Attorneys</a></li>
-                                        <li><a href="attorneys-single.php" class="active">Attorneys single</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Cases</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="case-results.php">Case results</a></li>
-                                        <li><a href="case-details.php">Case details</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">News</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="blog.php">Blog</a></li>
-                                        <li><a href="blog-single.php">Blog single</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Contact</a>
-                                    <ul class="sub-menu">
-                                        <li><a href="contact.php">Contact</a></li>
-                                        <li><a href="faq.php">FAQ</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="flat-show-search">
-                        <div class="show-search">
-                            <a href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
-                        </div>
-                        <div class="top-search">
-                            <div>
-                                <form action="#" id="searchform-all" method="get">
-                                    <input type="text" id="s" class="ss" placeholder="Search...">
-                                    <button class="search-submit">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header><!-- header -->
     <div class="attorney-app-container">
         <div class="container">
             <div class="row">
-        
+
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <form id="appointmentForm" class="appointment-form" method="post">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                                <path
+                                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </symbol>
+                        </svg>
+                        <?php
+if ($errorMsg) {
+    ?>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                <use xlink:href="#exclamation-triangle-fill" />
+                            </svg>
+                            <div>
+                                <?php echo $errorMsg; ?>
+                            </div>
+                        </div>
+                        <?php
+}
+?>
                         <div class="form-group">
                             <label for="customerName">Customer Name:</label>
                             <input type="text" id="customerName" name="customerName" required>
@@ -224,18 +142,19 @@ if(isset($_POST['appSubmit'])){
                             <label for="AttorneyName">Attorney Name:</label>
                             <select id="AttorneyName" class="lawyerSelection" name="AttorneyId" required>
                                 <option selected disabled>--Select a Lawyer--</option>
-                               <?php
-                               if(mysqli_num_rows($attorneyResult)){
-                                while($rows = mysqli_fetch_assoc($attorneyResult)){
-                                    $attorneyId = $rows['id'];
-                                    $attorneyName = $rows['fullname'];
-                                    $attorneyService = $rows['services'];
-                                    ?>
-                                    <option value="<?php echo $attorneyId; ?>"><?php echo $attorneyName.'-'. $attorneyService;?></option>
-                                    <?php
-                                }
-                               }
-                               ?>
+                                <?php
+if (mysqli_num_rows($attorneyResult)) {
+    while ($rows = mysqli_fetch_assoc($attorneyResult)) {
+        $attorneyId = $rows['id'];
+        $attorneyName = $rows['fullname'];
+        $attorneyService = $rows['services'];
+        ?>
+                                <option value="<?php echo $attorneyId; ?>">
+                                    <?php echo $attorneyName . '-' . $attorneyService; ?></option>
+                                <?php
+}
+}
+?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -248,208 +167,21 @@ if(isset($_POST['appSubmit'])){
                     </form>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="image-container">
+                    <div class="image-container">
                         <img src="images/attorneys/attorney-app-img-sm.jpg" alt="Lawyer Image">
                     </div>
                 </div>
-               
 
-                    
-                </div>
 
-           
+
+            </div>
+
+
         </div>
     </div>
-    <footer id="footer" class="footer">
-        <div class="footer-widgets">
-            <div class="container">
-                <div class="footer-top">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="widget widget-contact mg-footer-mbb">
-                                <h2 class="widget-title">Contact</h2>
-                                <div class="content">
-                                    <ul>
-                                        <li><span class="text address">20, Bardeshi, Amin Bazar Savar, Dhaka -
-                                                1348</span></li>
-                                        <li><span class="text phone">123.456.7890</span></li>
-                                        <li><span class="text email">hello@finelaw.com</span></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="widget widget-services mg-footer-mbb">
-                                <h2 class="widget-title">About</h2>
-                                <div class="content">
-                                    <ul class="widget-menu">
-                                        <li><a href="#">About us</a></li>
-                                        <li><a href="#">Our Team</a></li>
-                                        <li><a href="#">Career</a></li>
-                                        <li><a href="#">Practice Area</a></li>
-                                        <li><a href="#">Help Guide</a></li>
-                                        <li><a href="#">Tutorials</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="widget widget-services mg-footer-mbs">
-                                <h2 class="widget-title">Help Desk</h2>
-                                <div class="content">
-                                    <ul class="widget-menu">
-                                        <li><a href="#">Customer Care</a></li>
-                                        <li><a href="#">Legal Help</a></li>
-                                        <li><a href="#">Service</a></li>
-                                        <li><a href="#">Donation</a></li>
-                                        <li><a href="#">Child Care</a></li>
-                                        <li><a href="#">Presonal Care</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="widget widget-newsletter">
-                                <h2 class="widget-title">Newsletter</h2>
-                                <div class="content">
-                                    <p>Polore eu fugiat nulla pariatur Excepteur sint occaecat cupidat at non tomake
-                                        bole</p>
-                                    <form action="#" class="form-email-footer">
-                                        <input type="text" class="your-email" placeholder="Your email">
-                                        <button class="btn-email">
-                                            <i class="fa fa-envelope" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12">
-                            <div class="widget widget-text mg-footer-mbb">
-                                <div class="content">
-                                    <div class="images-logo">
-                                        <img src="images/footer/07.png" alt="images">
-                                    </div>
-                                    <p>
-                                        Naboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                        Excepteur sint occaecat cupidatat non proiden
-                                    </p>
-                                    <div class="list-socials">
-                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-5 col-sm-5">
-                            <div class="widget widget-gallery mg-footer-mbs clearfix">
-                                <h2 class="widget-title">Gallery</h2>
-                                <div class="content">
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/01.png" alt="images">
-                                    </div>
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/02.png" alt="images">
-                                    </div>
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/03.png" alt="images">
-                                    </div>
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/04.png" alt="images">
-                                    </div>
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/05.png" alt="images">
-                                    </div>
-                                    <div class="images-gallery hv-gallery-icon">
-                                        <div class="overlay-gallery">
-                                            <div class="item-link">
-                                                <a href="#" class="popup-gallery"><i class="fa fa-search"
-                                                        aria-hidden="true"></i></a>
-                                            </div>
-                                        </div>
-                                        <img src="images/footer/06.png" alt="images">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-7 col-sm-7">
-                            <div class="widget widget-twitter">
-                                <h2 class="widget-title">Recent Tweets</h2>
-                                <div class="content">
-                                    <div class="tw-wrap">
-                                        <div class="text-link">
-                                            Lco lodoami tomader lok amitomader vai amar ar kisu naikeho <a
-                                                href="#">http://bit.ly/7asF34</a>
-                                        </div>
-                                        <div class="text-time"><a href="#">@Fine Law</a> - 2 hours ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bottom">
-                <div class="container">
-                    <div class="bottom-wrap">
-                        <div class="row">
-                            <div class="col-lg-5 col-md-12">
-                                <div class="copyright">
-                                    <a href="templateshub.net">Templateshub</a>
-                                </div>
-                            </div>
-                            <div class="col-lg-7 col-md-12">
-                                <div class="menu-footer">
-                                    <ul>
-                                        <li><a href="#">Terms & Condition</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Legal</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a id="scroll-top" class="show"></a>
-    </footer><!-- footer -->
+    <?php
+    require_once "partials/footer.php";
+    ?>
 
     <script src="javascript/jquery.min.js"></script>
     <script src="javascript/plugins.js"></script>

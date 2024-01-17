@@ -1,12 +1,9 @@
 <?php
-session_start();
 require_once "partials/header.php";
-require_once "config.php";
 $firstLawyers = "SELECT * FROM lawyers LIMIT 2";
 $secLawyers = "SELECT * FROM lawyers LIMIT 2 OFFSET 2";
 $firstResult = mysqli_query($conn, $firstLawyers);
 $secResult = mysqli_query($conn, $secLawyers);
-
 ?>
 <div class="flat-slider clearfix">
     <div class="rev_slider_wrapper fullwidthbanner-container">

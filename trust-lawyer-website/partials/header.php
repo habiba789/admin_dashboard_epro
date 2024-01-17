@@ -1,4 +1,16 @@
 <?php
+require_once "config.php";
+session_start();
+if(isset($_SESSION["id"]) && $_SESSION["userType"]==="lawyer"){
+    $lawyerId = $_SESSION["id"];
+    $lawyerSql = "SELECT * FROM lawyers WHERE id = '$lawyerId'";
+    $lawyerResult = mysqli_query($conn, $lawyerSql);
+    if(mysqli_num_rows($lawyerResult)>0){
+        $loginLawyer = mysqli_fetch_assoc($lawyerResult);
+        $loginLawyerName = $loginLawyer['fullname'];
+        $loginLawyerImage = $loginLawyer['image'];
+    }
+}
 echo '
 <!DOCTYPE html>
 <html lang="zxx">
@@ -105,7 +117,7 @@ echo '
                                 if(isset($_SESSION['login']) && $_SESSION["login"]===true){   
                                   echo ' <li class="user-profile-pic">
                                     <a href="User-panel/userpanelMain.php">
-                                        <img src="images/male_dummy.png" alt="">
+                                        <img src="../admin-dashboard/template/images/uploads/'.$loginLawyerImage.'" alt="" class="loginProfileImg">
                                         My Profile
                                     </a>                                    
                                 </li>';   
